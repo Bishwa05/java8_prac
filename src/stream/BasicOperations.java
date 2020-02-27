@@ -23,6 +23,10 @@ class Employee {
         return new Long(this.no);
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
         return "Employee [no=" + no + ", name=" + name + ", sal=" + sal + "]";
@@ -369,7 +373,9 @@ public class BasicOperations {
  * skip() skips the first n elements in the encounter order.
  */
 
-        List<Integer> newList3 = evenNumInfiniteStream
+        Stream<Integer> evenNumInfiniteStream1 = Stream.iterate(0, n -> n + 2);
+
+        List<Integer> newList3 = evenNumInfiniteStream1
                 .skip(5)
                 .limit(10)
                 .collect(Collectors.toList());
@@ -390,9 +396,30 @@ public class BasicOperations {
 
         Map<Long, Employee> employeesMap = employeeList.stream()
                 .collect( Collectors.toMap(Employee::getNo,
-                        Function.identity()) );
+                        Function.identity()));
 
         System.out.println(employeesMap);
+        System.out.println(separator);
+
+    /**
+     * If the stream elements have elements where map keys are duplicate
+     * the we can use Collectors.groupingBy() to collect elements to map
+     * in Map<keyObj, List<Element>> format. Here for each map key, we will
+     * store all elements in a list as map value.
+     */
+        List<Employee> employeeList1 = new ArrayList<>(Arrays.asList(
+                new Employee(1, "A", 100),
+                new Employee(2, "A", 200),
+                new Employee(3, "B", 300),
+                new Employee(4, "B", 400),
+                new Employee(5, "C", 500),
+                new Employee(6, "C", 600)));
+
+        Map<String, List<Employee>> employeesMap1 = employeeList1.stream()
+                .collect(Collectors.groupingBy(Employee::getName));
+
+        System.out.println(employeesMap1);
+        System.out.println(separator);
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
